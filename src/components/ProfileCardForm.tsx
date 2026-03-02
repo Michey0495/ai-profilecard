@@ -5,10 +5,10 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 const styleOptions = [
-  { value: "cool", label: "クール" },
-  { value: "cute", label: "キュート" },
-  { value: "dark", label: "ダーク" },
-  { value: "creative", label: "クリエイティブ" },
+  { value: "cool", label: "クール", dot: "bg-sky-400", selBg: "bg-sky-500/20", selBorder: "border-sky-400/50", selText: "text-sky-300" },
+  { value: "cute", label: "キュート", dot: "bg-pink-400", selBg: "bg-pink-500/20", selBorder: "border-pink-400/50", selText: "text-pink-300" },
+  { value: "dark", label: "ダーク", dot: "bg-violet-400", selBg: "bg-violet-500/20", selBorder: "border-violet-400/50", selText: "text-violet-300" },
+  { value: "creative", label: "クリエイティブ", dot: "bg-amber-400", selBg: "bg-amber-500/20", selBorder: "border-amber-400/50", selText: "text-amber-300" },
 ];
 
 const loadingMessages = [
@@ -142,12 +142,13 @@ export function ProfileCardForm() {
                 key={opt.value}
                 type="button"
                 onClick={() => setForm({ ...form, style: opt.value })}
-                className={`text-sm py-2 rounded-lg border transition-all duration-200 cursor-pointer ${
+                className={`text-sm py-2 rounded-lg border transition-all duration-200 cursor-pointer flex items-center justify-center gap-1.5 ${
                   form.style === opt.value
-                    ? "bg-sky-500/20 border-sky-400/50 text-sky-300"
+                    ? `${opt.selBg} ${opt.selBorder} ${opt.selText}`
                     : "bg-white/5 border-white/10 text-white/50 hover:bg-white/10"
                 }`}
               >
+                <span className={`inline-block w-2 h-2 rounded-full ${opt.dot}`} />
                 {opt.label}
               </button>
             ))}

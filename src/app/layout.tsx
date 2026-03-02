@@ -20,6 +20,7 @@ const siteUrl =
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
+  manifest: "/manifest.json",
   title: {
     template: "%s | AIプロフカード",
     default:
@@ -80,6 +81,8 @@ export default function RootLayout({
   return (
     <html lang="ja">
       <head>
+        <meta name="theme-color" content="#000000" />
+        <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
         {gaId && (
           <>
             <script

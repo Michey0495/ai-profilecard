@@ -10,8 +10,13 @@ AI自己紹介カードメーカー - 名前と趣味を入れるとオシャレ
 - 5つの能力値ステータス (バー表示)
 - ハッシュタグ自動生成
 - 4つのカードスタイル (クール/キュート/ダーク/クリエイティブ)
-- 結果シェア機能 (X/リンクコピー)
+- 結果シェア機能 (X/LINE/リンクコピー)
 - OGP画像自動生成でSNS映え
+- カード画像ダウンロード
+- カード履歴 (localStorage)
+- PWA対応 (モバイルインストール可能)
+- フィードバックウィジェット
+- クロスプロモーション (ezoai.jpサービス一覧)
 
 ## Tech Stack
 
@@ -101,3 +106,27 @@ Tool: `generate_profile_card`
 - Hosting: Vercel
 - Domain: ai-profilecard.ezoai.jp
 - GitHub: https://github.com/Michey0495/ai-profilecard
+
+## Development Progress
+
+### Night 1 (MVP)
+- Project setup, core form and API
+- AI generation with Claude Haiku
+- Result page with OGP image
+
+### Night 2 (Enhancement)
+- Animated stats, card download, card reveal animation
+- 4 card styles with theme system
+- SEO (JSON-LD, sitemap, robots)
+- AI public channels (MCP, agent.json, llms.txt)
+- Feedback widget, cross-promotion
+- Error/404 pages, rate limiting
+
+### Night 3 (Polish)
+- LINE share button (critical for Japanese audience)
+- Style color indicators in form
+- Card history via localStorage
+- PWA manifest for mobile installability
+- Performance optimizations (dns-prefetch, theme-color)
+
+### Status: COMPLETE

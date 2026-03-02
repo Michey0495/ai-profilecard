@@ -9,6 +9,7 @@ interface ShareButtonsProps {
 
 export function ShareButtons({ shareText, shareUrl }: ShareButtonsProps) {
   const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`;
+  const lineUrl = `https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(shareText)}`;
 
   const handleCopy = async () => {
     try {
@@ -20,20 +21,28 @@ export function ShareButtons({ shareText, shareUrl }: ShareButtonsProps) {
   };
 
   return (
-    <div className="flex gap-3">
+    <div className="grid grid-cols-3 gap-3">
       <a
         href={twitterUrl}
         target="_blank"
         rel="noopener noreferrer"
-        className="flex-1 bg-white/10 text-white font-medium px-4 py-2.5 rounded-lg text-center text-sm hover:bg-white/20 transition-all duration-200 cursor-pointer"
+        className="bg-white/10 text-white font-medium px-4 py-2.5 rounded-lg text-center text-sm hover:bg-white/20 transition-all duration-200 cursor-pointer"
       >
-        X (Twitter) でシェア
+        X でシェア
+      </a>
+      <a
+        href={lineUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="bg-[#06C755]/20 text-[#06C755] font-medium px-4 py-2.5 rounded-lg text-center text-sm hover:bg-[#06C755]/30 transition-all duration-200 cursor-pointer"
+      >
+        LINE でシェア
       </a>
       <button
         onClick={handleCopy}
-        className="flex-1 bg-white/5 text-white/70 font-medium px-4 py-2.5 rounded-lg text-sm border border-white/10 hover:bg-white/10 transition-all duration-200 cursor-pointer"
+        className="bg-white/5 text-white/70 font-medium px-4 py-2.5 rounded-lg text-sm border border-white/10 hover:bg-white/10 transition-all duration-200 cursor-pointer"
       >
-        リンクをコピー
+        リンクコピー
       </button>
     </div>
   );

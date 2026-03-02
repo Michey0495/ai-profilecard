@@ -1,4 +1,5 @@
 import { ProfileCardForm } from "@/components/ProfileCardForm";
+import { CardHistory } from "@/components/CardHistory";
 
 const siteUrl =
   process.env.NEXT_PUBLIC_SITE_URL ?? "https://ai-profilecard.ezoai.jp";
@@ -104,6 +105,8 @@ export default function Home() {
       </div>
 
       <ProfileCardForm />
+
+      <CardHistory />
 
       {/* Sample Card */}
       <section className="mt-16 space-y-4">

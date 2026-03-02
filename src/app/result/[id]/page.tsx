@@ -7,6 +7,7 @@ import { AnimatedStats } from "@/components/AnimatedStats";
 import { CardDownload } from "@/components/CardDownload";
 import { CardReveal } from "@/components/CardReveal";
 import { getTheme } from "@/lib/styles";
+import { SaveHistory } from "@/components/SaveHistory";
 import type { ProfileResult } from "@/types";
 
 const siteUrl =
@@ -64,6 +65,14 @@ export default async function ResultPage({ params }: Props) {
         </h1>
         <p className="text-white/50 text-sm">AIが生成したプロフィールカード</p>
       </div>
+
+      <SaveHistory
+        id={id}
+        name={result.input.name}
+        title={result.title}
+        style={result.input.style}
+        createdAt={result.createdAt}
+      />
 
       {/* Profile Card */}
       <CardReveal>
