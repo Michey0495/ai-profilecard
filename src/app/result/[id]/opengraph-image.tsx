@@ -7,6 +7,13 @@ export const alt = "AIプロフカードの結果";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
+const accentColors: Record<string, { hex: string; bg: string }> = {
+  cool: { hex: "#38bdf8", bg: "rgba(56,189,248,0.1)" },
+  cute: { hex: "#f472b6", bg: "rgba(244,114,182,0.1)" },
+  dark: { hex: "#a78bfa", bg: "rgba(167,139,250,0.1)" },
+  creative: { hex: "#fbbf24", bg: "rgba(251,191,36,0.1)" },
+};
+
 export default async function OGImage({
   params,
 }: {
@@ -38,6 +45,8 @@ export default async function OGImage({
     );
   }
 
+  const accent = accentColors[result.input.style] ?? accentColors.cool;
+
   return new ImageResponse(
     (
       <div
@@ -62,7 +71,7 @@ export default async function OGImage({
           }}
         >
           <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-            <span style={{ color: "#38bdf8", fontSize: 32, fontWeight: 900 }}>
+            <span style={{ color: accent.hex, fontSize: 32, fontWeight: 900 }}>
               {"//"}
             </span>
             <span style={{ fontSize: 24, fontWeight: 700, color: "#fff" }}>
@@ -96,7 +105,7 @@ export default async function OGImage({
             <div
               style={{
                 fontSize: 16,
-                color: "#38bdf8",
+                color: accent.hex,
                 fontWeight: 700,
                 letterSpacing: 2,
               }}
@@ -110,7 +119,7 @@ export default async function OGImage({
               style={{
                 fontSize: 28,
                 fontWeight: 700,
-                color: "#38bdf8",
+                color: accent.hex,
               }}
             >
               {result.title.slice(0, 20)}
@@ -167,7 +176,7 @@ export default async function OGImage({
                     style={{
                       width: `${stat.value}%`,
                       height: "100%",
-                      background: "#38bdf8",
+                      background: accent.hex,
                       borderRadius: 6,
                     }}
                   />
@@ -175,7 +184,7 @@ export default async function OGImage({
                 <div
                   style={{
                     fontSize: 16,
-                    color: "#38bdf8",
+                    color: accent.hex,
                     fontWeight: 700,
                     width: 32,
                     textAlign: "right",
@@ -202,8 +211,8 @@ export default async function OGImage({
               key={i}
               style={{
                 fontSize: 16,
-                color: "#38bdf8",
-                background: "rgba(56,189,248,0.1)",
+                color: accent.hex,
+                background: accent.bg,
                 padding: "4px 16px",
                 borderRadius: 999,
               }}

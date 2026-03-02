@@ -6,6 +6,7 @@ import { ShareButtons } from "@/components/ShareButtons";
 import { AnimatedStats } from "@/components/AnimatedStats";
 import { CardDownload } from "@/components/CardDownload";
 import { CardReveal } from "@/components/CardReveal";
+import { getTheme } from "@/lib/styles";
 import type { ProfileResult } from "@/types";
 
 const siteUrl =
@@ -50,6 +51,8 @@ export default async function ResultPage({ params }: Props) {
     notFound();
   }
 
+  const theme = getTheme(result.input.style);
+
   const shareText = `AIプロフカードで自己紹介カードを作ったら「${result.title}」って言われた\n\n${result.catchcopy}\n\nあなたもプロフカードを作ってみませんか?`;
   const shareUrl = `${siteUrl}/result/${id}`;
 
@@ -57,7 +60,7 @@ export default async function ResultPage({ params }: Props) {
     <div className="max-w-2xl mx-auto px-4 py-12">
       <div className="text-center mb-8">
         <h1 className="text-3xl font-black tracking-tight mb-2">
-          <span className="text-sky-400">{"//"}</span> プロフカード
+          <span className={theme.accent}>{"//"}</span> プロフカード
         </h1>
         <p className="text-white/50 text-sm">AIが生成したプロフィールカード</p>
       </div>
@@ -69,13 +72,13 @@ export default async function ResultPage({ params }: Props) {
         <div className="p-6 border-b border-white/10">
           <div className="flex items-start justify-between">
             <div>
-              <p className="text-sky-400 text-xs font-bold tracking-widest mb-2">
+              <p className={`${theme.accent} text-xs font-bold tracking-widest mb-2`}>
                 {result.type}
               </p>
               <p className="text-white font-black text-2xl">
                 {result.input.name}
               </p>
-              <p className="text-sky-400 font-bold text-lg mt-1">
+              <p className={`${theme.accent} font-bold text-lg mt-1`}>
                 {result.title}
               </p>
             </div>
@@ -96,7 +99,7 @@ export default async function ResultPage({ params }: Props) {
         {/* Stats */}
         <div className="p-6 border-b border-white/10">
           <p className="text-white/40 text-xs font-medium mb-4">STATUS</p>
-          <AnimatedStats stats={result.stats} />
+          <AnimatedStats stats={result.stats} barColor={theme.barColor} accentText={theme.accent} />
         </div>
 
         {/* Hashtags */}
@@ -107,7 +110,7 @@ export default async function ResultPage({ params }: Props) {
               {result.hashtags.map((tag, i) => (
                 <span
                   key={i}
-                  className="bg-sky-500/10 text-sky-400 text-xs px-3 py-1.5 rounded-full border border-sky-400/20"
+                  className={`${theme.tagBg} ${theme.tagText} text-xs px-3 py-1.5 rounded-full border ${theme.tagBorder}`}
                 >
                   #{tag}
                 </span>
@@ -128,7 +131,6 @@ export default async function ResultPage({ params }: Props) {
           <span className="text-white/20 text-xs">ai-profilecard.ezoai.jp</span>
         </div>
       </div>
-
       </CardReveal>
 
       {/* Share */}
@@ -137,7 +139,7 @@ export default async function ResultPage({ params }: Props) {
         <CardDownload cardId={id} />
         <Link
           href="/"
-          className="block w-full bg-sky-500 text-white font-bold px-8 py-3 rounded-lg text-center hover:bg-sky-600 transition-all duration-200 cursor-pointer"
+          className={`block w-full ${theme.buttonBg} text-white font-bold px-8 py-3 rounded-lg text-center ${theme.buttonHover} transition-all duration-200 cursor-pointer`}
         >
           自分もプロフカードを作る
         </Link>
