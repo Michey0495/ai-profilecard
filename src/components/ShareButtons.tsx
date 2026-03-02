@@ -26,6 +26,7 @@ export function ShareButtons({ shareText, shareUrl }: ShareButtonsProps) {
         href={twitterUrl}
         target="_blank"
         rel="noopener noreferrer"
+        aria-label="X (Twitter) でプロフカードをシェア"
         className="bg-white/10 text-white font-medium px-4 py-2.5 rounded-lg text-center text-sm hover:bg-white/20 transition-all duration-200 cursor-pointer"
       >
         X でシェア
@@ -34,12 +35,14 @@ export function ShareButtons({ shareText, shareUrl }: ShareButtonsProps) {
         href={lineUrl}
         target="_blank"
         rel="noopener noreferrer"
+        aria-label="LINE でプロフカードをシェア"
         className="bg-[#06C755]/20 text-[#06C755] font-medium px-4 py-2.5 rounded-lg text-center text-sm hover:bg-[#06C755]/30 transition-all duration-200 cursor-pointer"
       >
         LINE でシェア
       </a>
       <button
         onClick={handleCopy}
+        aria-label="プロフカードのリンクをコピー"
         className="bg-white/5 text-white/70 font-medium px-4 py-2.5 rounded-lg text-sm border border-white/10 hover:bg-white/10 transition-all duration-200 cursor-pointer"
       >
         リンクコピー

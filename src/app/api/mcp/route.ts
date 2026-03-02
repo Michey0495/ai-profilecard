@@ -116,9 +116,12 @@ JSONのみを出力してください。`;
         parsed = JSON.parse(text);
       } catch {
         const jsonMatch = text.match(/\{[\s\S]*\}/);
-        if (jsonMatch) {
+        if (!jsonMatch) {
+          throw new Error("Failed to parse AI response");
+        }
+        try {
           parsed = JSON.parse(jsonMatch[0]);
-        } else {
+        } catch {
           throw new Error("Failed to parse AI response");
         }
       }

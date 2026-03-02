@@ -77,7 +77,7 @@ export function ProfileCardForm() {
       <div className="bg-white/5 rounded-xl p-6 border border-white/10 space-y-4">
         <div>
           <div className="flex justify-between items-center mb-1.5">
-            <label className="text-sm font-medium text-white/70">
+            <label htmlFor="name" className="text-sm font-medium text-white/70">
               名前・ニックネーム <span className="text-sky-400">*</span>
             </label>
             <span className="text-xs text-white/30">
@@ -85,6 +85,7 @@ export function ProfileCardForm() {
             </span>
           </div>
           <input
+            id="name"
             type="text"
             value={form.name}
             onChange={(e) => setForm({ ...form, name: e.target.value })}
@@ -96,7 +97,7 @@ export function ProfileCardForm() {
 
         <div>
           <div className="flex justify-between items-center mb-1.5">
-            <label className="text-sm font-medium text-white/70">
+            <label htmlFor="interests" className="text-sm font-medium text-white/70">
               趣味・興味 <span className="text-sky-400">*</span>
             </label>
             <span className="text-xs text-white/30">
@@ -104,6 +105,7 @@ export function ProfileCardForm() {
             </span>
           </div>
           <textarea
+            id="interests"
             value={form.interests}
             onChange={(e) => setForm({ ...form, interests: e.target.value })}
             placeholder="例: ゲーム、アニメ、カフェ巡り、プログラミング、旅行..."
@@ -115,7 +117,7 @@ export function ProfileCardForm() {
 
         <div>
           <div className="flex justify-between items-center mb-1.5">
-            <label className="text-sm font-medium text-white/70">
+            <label htmlFor="personality" className="text-sm font-medium text-white/70">
               性格・特徴
             </label>
             <span className="text-xs text-white/30">
@@ -123,6 +125,7 @@ export function ProfileCardForm() {
             </span>
           </div>
           <input
+            id="personality"
             type="text"
             value={form.personality}
             onChange={(e) => setForm({ ...form, personality: e.target.value })}
@@ -133,14 +136,16 @@ export function ProfileCardForm() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-white/70 mb-1.5">
+          <span className="block text-sm font-medium text-white/70 mb-1.5" id="style-label">
             カードの雰囲気
-          </label>
-          <div className="grid grid-cols-4 gap-2">
+          </span>
+          <div className="grid grid-cols-4 gap-2" role="radiogroup" aria-labelledby="style-label">
             {styleOptions.map((opt) => (
               <button
                 key={opt.value}
                 type="button"
+                role="radio"
+                aria-checked={form.style === opt.value}
                 onClick={() => setForm({ ...form, style: opt.value })}
                 className={`text-sm py-2 rounded-lg border transition-all duration-200 cursor-pointer flex items-center justify-center gap-1.5 ${
                   form.style === opt.value
@@ -159,6 +164,7 @@ export function ProfileCardForm() {
       <button
         type="submit"
         disabled={loading}
+        aria-busy={loading}
         className="w-full bg-sky-500 text-white font-bold px-8 py-3 rounded-lg hover:bg-sky-600 transition-all duration-200 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {loading ? (

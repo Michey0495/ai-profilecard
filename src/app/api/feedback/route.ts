@@ -2,7 +2,14 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
   try {
-    const { type, message, repo } = await req.json();
+    const body = await req.json();
+    const type = String(body.type ?? "other").slice(0, 20);
+    const message = String(body.message ?? "").slice(0, 1000);
+    const repo = String(body.repo ?? "ai-profilecard").slice(0, 50);
+
+    if (!message.trim()) {
+      return NextResponse.json({ ok: false, error: "メッセージが空です" }, { status: 400 });
+    }
 
     const labelMap: Record<string, string> = {
       bug: "bug",

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useSyncExternalStore } from "react";
 import Link from "next/link";
 
 interface HistoryEntry {
@@ -36,17 +36,34 @@ const accentMap: Record<string, string> = {
   creative: "text-amber-400",
 };
 
-export function CardHistory() {
-  const [history, setHistory] = useState<HistoryEntry[]>([]);
+const EMPTY: HistoryEntry[] = [];
+let cachedRaw: string | null | undefined;
+let cachedHistory: HistoryEntry[] = EMPTY;
 
-  useEffect(() => {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (raw) setHistory(JSON.parse(raw));
-    } catch {
-      // localStorage unavailable
+function getSnapshot(): HistoryEntry[] {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw !== cachedRaw) {
+      cachedRaw = raw;
+      cachedHistory = raw ? JSON.parse(raw) : EMPTY;
     }
-  }, []);
+    return cachedHistory;
+  } catch {
+    return EMPTY;
+  }
+}
+
+function getServerSnapshot(): HistoryEntry[] {
+  return EMPTY;
+}
+
+function subscribe(onStoreChange: () => void): () => void {
+  window.addEventListener("storage", onStoreChange);
+  return () => window.removeEventListener("storage", onStoreChange);
+}
+
+export function CardHistory() {
+  const history = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 
   if (history.length === 0) return null;
 

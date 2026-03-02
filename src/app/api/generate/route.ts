@@ -25,8 +25,19 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const body = await req.json();
+    let body;
+    try {
+      body = await req.json();
+    } catch {
+      return NextResponse.json(
+        { error: "不正なリクエストです。" },
+        { status: 400 }
+      );
+    }
     const { name, interests, personality, style } = body;
+
+    const validStyles = ["cool", "cute", "dark", "creative"];
+    const safeStyle = validStyles.includes(style) ? style : "cool";
 
     if (!name?.trim()) {
       return NextResponse.json(
@@ -45,7 +56,7 @@ export async function POST(req: NextRequest) {
       name,
       interests,
       personality,
-      style,
+      style: safeStyle,
     });
 
     return NextResponse.json({ id: result.id });
