@@ -1,0 +1,81 @@
+# AIプロフカード (AI Profile Card)
+
+> AI-powered profile card generator service
+
+## Overview
+AIプロフカードは、名前と趣味を入力するだけでAIがオシャレな自己紹介カードを自動生成するサービスです。
+キャッチコピー、性格タイプ、5つのステータス値、ハッシュタグを含むカードを30秒で作成。SNSシェア対応。
+
+## Features
+- 名前と趣味から自動でプロフカード生成
+- AI生成キャッチコピーと二つ名
+- 性格タイプ判定
+- 5つの能力値ステータス
+- ハッシュタグ自動生成
+- 4つのカードスタイル (クール/キュート/ダーク/クリエイティブ)
+- 結果のシェア機能 (X/リンクコピー)
+- OGP画像自動生成
+
+## Tech Stack
+- Next.js 15 (App Router)
+- TypeScript (strict)
+- Tailwind CSS
+- Claude Haiku (AI engine)
+- Vercel KV (data storage)
+
+## API
+### POST /api/generate
+Generate a profile card.
+
+Request:
+```json
+{
+  "name": "たろう",
+  "interests": "ゲーム、プログラミング、アニメ",
+  "personality": "好奇心旺盛、マイペース",
+  "style": "cool"
+}
+```
+
+Response:
+```json
+{
+  "id": "abc123"
+}
+```
+
+Result available at: /result/{id}
+
+## MCP Server
+Endpoint: /api/mcp
+Protocol: JSON-RPC 2.0
+
+### Tool: generate_profile_card
+Generate an AI-powered profile card.
+
+Parameters:
+- name (string, required): Name or nickname
+- interests (string, required): Hobbies and interests
+- personality (string, optional): Personality traits
+- style (string, optional): Card style (cool/cute/dark/creative)
+
+Returns:
+- title: Catchy nickname/title
+- catchcopy: Profile catchphrase
+- type: Personality type
+- description: Profile description
+- stats: Array of 5 ability stats (label + value 50-99)
+- hashtags: Array of 3 hashtags
+
+## Pages
+- / - Home page with profile card form
+- /result/{id} - Generated profile card with OGP
+
+## Links
+- Website: https://ai-profilecard.ezoai.jp
+- Agent Card: https://ai-profilecard.ezoai.jp/.well-known/agent.json
+- MCP Endpoint: https://ai-profilecard.ezoai.jp/api/mcp
+- GitHub: https://github.com/Michey0495/ai-profilecard
+
+## Contact
+Ghostfee - https://github.com/Michey0495

@@ -1,36 +1,103 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# AIプロフカード
 
-## Getting Started
+AI自己紹介カードメーカー - 名前と趣味を入れるとオシャレなプロフカードを自動生成、SNS映え
 
-First, run the development server:
+## Features
+
+- 名前と趣味を入力するだけでAIがプロフカードを自動生成
+- AI生成キャッチコピーと二つ名
+- 性格タイプ判定
+- 5つの能力値ステータス (バー表示)
+- ハッシュタグ自動生成
+- 4つのカードスタイル (クール/キュート/ダーク/クリエイティブ)
+- 結果シェア機能 (X/リンクコピー)
+- OGP画像自動生成でSNS映え
+
+## Tech Stack
+
+- Next.js 15 (App Router)
+- TypeScript (strict)
+- Tailwind CSS
+- Claude Haiku 4.5 (AI engine)
+- Vercel KV (data storage)
+- Sonner (toast notifications)
+
+## Setup
+
+```bash
+npm install
+```
+
+### Environment Variables
+
+```env
+ANTHROPIC_API_KEY=sk-ant-...
+KV_REST_API_URL=https://...
+KV_REST_API_TOKEN=...
+NEXT_PUBLIC_SITE_URL=https://ai-profilecard.ezoai.jp
+NEXT_PUBLIC_GA_ID=G-... (optional)
+GITHUB_TOKEN=ghp_... (optional, for feedback)
+```
+
+### Development
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Build
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+npm run build
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## API
 
-## Learn More
+### POST /api/generate
 
-To learn more about Next.js, take a look at the following resources:
+Generate a profile card.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Request:
+```json
+{
+  "name": "たろう",
+  "interests": "ゲーム、プログラミング、アニメ",
+  "personality": "好奇心旺盛、マイペース",
+  "style": "cool"
+}
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Response:
+```json
+{
+  "id": "abc123"
+}
+```
 
-## Deploy on Vercel
+### MCP Server: /api/mcp
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+JSON-RPC 2.0 endpoint for AI agent integration.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Tool: `generate_profile_card`
+- name (string, required): Name or nickname
+- interests (string, required): Hobbies and interests
+- personality (string, optional): Personality traits
+- style (string, optional): cool/cute/dark/creative
+
+## Pages
+
+- `/` - Home page with profile card form
+- `/result/{id}` - Generated profile card with OGP image
+
+## AI Public Channels
+
+- Agent Card: `/.well-known/agent.json`
+- LLMs: `/llms.txt`
+- Robots: `/robots.txt`
+- MCP: `/api/mcp`
+
+## Deployment
+
+- Hosting: Vercel
+- Domain: ai-profilecard.ezoai.jp
+- GitHub: https://github.com/Michey0495/ai-profilecard

@@ -1,0 +1,60 @@
+{
+  "name": "AIプロフカード",
+  "description": "AI-powered profile card generator. Creates stylish self-introduction cards with catchy titles, personality types, stats, and hashtags from a name and interests.",
+  "url": "https://ai-profilecard.ezoai.jp",
+  "version": "1.0.0",
+  "capabilities": {
+    "streaming": false,
+    "pushNotifications": false
+  },
+  "provider": {
+    "organization": "Ghostfee",
+    "url": "https://github.com/Michey0495"
+  },
+  "documentationUrl": "https://ai-profilecard.ezoai.jp/llms.txt",
+  "authentication": {
+    "schemes": ["none"]
+  },
+  "protocols": {
+    "mcp": {
+      "endpoint": "https://ai-profilecard.ezoai.jp/api/mcp",
+      "version": "2024-11-05",
+      "tools": [
+        {
+          "name": "generate_profile_card",
+          "description": "Generate an AI-powered profile card with catchy title, personality type, stats, and hashtags",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "description": "Name or nickname for the profile card"
+              },
+              "interests": {
+                "type": "string",
+                "description": "Hobbies and interests (comma-separated)"
+              },
+              "personality": {
+                "type": "string",
+                "description": "Personality traits (optional)"
+              },
+              "style": {
+                "type": "string",
+                "description": "Card style: cool, cute, dark, or creative (optional)"
+              }
+            },
+            "required": ["name", "interests"]
+          }
+        }
+      ]
+    }
+  },
+  "skills": [
+    {
+      "id": "profile-card-generation",
+      "name": "Profile Card Generation",
+      "description": "Generate a stylish AI-powered self-introduction card from name and interests",
+      "tags": ["profile", "self-introduction", "card", "SNS", "social"]
+    }
+  ]
+}

@@ -1,65 +1,131 @@
-import Image from "next/image";
+import { ProfileCardForm } from "@/components/ProfileCardForm";
+
+const siteUrl =
+  process.env.NEXT_PUBLIC_SITE_URL ?? "https://ai-profilecard.ezoai.jp";
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: "AIプロフカード",
+  url: siteUrl,
+  description:
+    "名前と趣味を入力するだけで、AIがオシャレな自己紹介カードを自動生成。SNS映えするプロフィールカードを30秒で作成。",
+  applicationCategory: "EntertainmentApplication",
+  operatingSystem: "Web",
+  offers: { "@type": "Offer", price: "0", priceCurrency: "JPY" },
+  creator: {
+    "@type": "Organization",
+    name: "Ghostfee",
+    url: "https://ezoai.jp",
+  },
+  inLanguage: "ja",
+  isAccessibleForFree: true,
+  featureList:
+    "AIプロフィールカード生成, 名前と趣味から自動作成, SNSシェア対応, 4つのスタイル選択, ステータス表示",
+};
+
+const faqJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: [
+    {
+      "@type": "Question",
+      name: "AIプロフカードとは何ですか?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "AIプロフカードは、名前と趣味を入力するだけでAIがオシャレな自己紹介カードを自動生成するサービスです。キャッチコピー、性格タイプ、ステータスなどを含むカードが30秒で作成できます。",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "利用料金はかかりますか?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "完全無料です。会員登録も不要で、すぐに利用できます。何度でもカードを作成可能です。",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "作成したカードはSNSでシェアできますか?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "はい、X (Twitter) へのシェアやリンクコピーに対応しています。OGP画像も自動生成されるため、SNSに投稿すると見栄えの良いカードが表示されます。",
+      },
+    },
+  ],
+};
 
 export default function Home() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+    <div className="max-w-2xl mx-auto px-4 py-12">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+      />
+
+      <div className="text-center mb-10">
+        <p className="text-sky-400 text-sm font-bold tracking-widest mb-4">
+          無料・登録不要・30秒で完成
+        </p>
+        <h1 className="text-4xl font-black tracking-tight mb-3">
+          <span className="text-sky-400">{"//"}</span> AIプロフカード
+        </h1>
+        <p className="text-white/70 text-lg leading-relaxed">
+          名前と趣味を入力するだけで、AIが
+          <span className="text-sky-400 font-bold">オシャレな自己紹介カード</span>
+          を自動生成
+        </p>
+        <p className="text-white/40 text-sm mt-2">
+          SNS映えするプロフカードを一瞬で。キャッチコピーもステータスもAIにおまかせ。
+        </p>
+      </div>
+
+      <div className="grid grid-cols-3 gap-3 mb-8">
+        {[
+          { step: "1", title: "入力", desc: "名前と趣味を記入" },
+          { step: "2", title: "生成", desc: "AIがカードを作成" },
+          { step: "3", title: "シェア", desc: "SNSで共有" },
+        ].map((item) => (
+          <div
+            key={item.step}
+            className="bg-white/5 border border-white/10 rounded-lg p-4 text-center"
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+            <div className="text-sky-400 font-black text-lg mb-1">
+              {item.step}
+            </div>
+            <div className="text-white text-sm font-bold">{item.title}</div>
+            <div className="text-white/40 text-xs mt-1">{item.desc}</div>
+          </div>
+        ))}
+      </div>
+
+      <ProfileCardForm />
+
+      <section className="mt-16 space-y-4">
+        <h2 className="text-white/50 text-xs tracking-widest uppercase text-center">
+          Features
+        </h2>
+        <div className="grid grid-cols-2 gap-3">
+          {[
+            { title: "AI生成キャッチコピー", desc: "あなたの個性を一言で表現" },
+            { title: "ステータス表示", desc: "5つの能力値をレーダー風に可視化" },
+            { title: "性格タイプ判定", desc: "趣味と性格からタイプを分析" },
+            { title: "SNSシェア対応", desc: "OGP画像付きで映えるシェア" },
+          ].map((f) => (
+            <div
+              key={f.title}
+              className="bg-white/5 border border-white/10 rounded-lg p-4"
+            >
+              <div className="text-white text-sm font-bold">{f.title}</div>
+              <div className="text-white/40 text-xs mt-1">{f.desc}</div>
+            </div>
+          ))}
         </div>
-      </main>
+      </section>
     </div>
   );
 }
