@@ -11,9 +11,17 @@ const styleOptions = [
   { value: "creative", label: "クリエイティブ" },
 ];
 
+const loadingMessages = [
+  "プロフィールを分析中...",
+  "キャッチコピーを考案中...",
+  "ステータスを算出中...",
+  "カードをデザイン中...",
+];
+
 export function ProfileCardForm() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [loadingMsg, setLoadingMsg] = useState(0);
   const [form, setForm] = useState({
     name: "",
     interests: "",
@@ -34,6 +42,14 @@ export function ProfileCardForm() {
     }
 
     setLoading(true);
+    setLoadingMsg(0);
+
+    const interval = setInterval(() => {
+      setLoadingMsg((prev) =>
+        prev < loadingMessages.length - 1 ? prev + 1 : prev
+      );
+    }, 2000);
+
     try {
       const res = await fetch("/api/generate", {
         method: "POST",
@@ -51,6 +67,7 @@ export function ProfileCardForm() {
     } catch {
       toast.error("通信エラーが発生しました");
     } finally {
+      clearInterval(interval);
       setLoading(false);
     }
   };
@@ -59,9 +76,14 @@ export function ProfileCardForm() {
     <form onSubmit={handleSubmit} className="space-y-5">
       <div className="bg-white/5 rounded-xl p-6 border border-white/10 space-y-4">
         <div>
-          <label className="block text-sm font-medium text-white/70 mb-1.5">
-            名前・ニックネーム <span className="text-sky-400">*</span>
-          </label>
+          <div className="flex justify-between items-center mb-1.5">
+            <label className="text-sm font-medium text-white/70">
+              名前・ニックネーム <span className="text-sky-400">*</span>
+            </label>
+            <span className="text-xs text-white/30">
+              {form.name.length}/50
+            </span>
+          </div>
           <input
             type="text"
             value={form.name}
@@ -73,9 +95,14 @@ export function ProfileCardForm() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-white/70 mb-1.5">
-            趣味・興味 <span className="text-sky-400">*</span>
-          </label>
+          <div className="flex justify-between items-center mb-1.5">
+            <label className="text-sm font-medium text-white/70">
+              趣味・興味 <span className="text-sky-400">*</span>
+            </label>
+            <span className="text-xs text-white/30">
+              {form.interests.length}/300
+            </span>
+          </div>
           <textarea
             value={form.interests}
             onChange={(e) => setForm({ ...form, interests: e.target.value })}
@@ -87,9 +114,14 @@ export function ProfileCardForm() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-white/70 mb-1.5">
-            性格・特徴
-          </label>
+          <div className="flex justify-between items-center mb-1.5">
+            <label className="text-sm font-medium text-white/70">
+              性格・特徴
+            </label>
+            <span className="text-xs text-white/30">
+              {form.personality.length}/200
+            </span>
+          </div>
           <input
             type="text"
             value={form.personality}
@@ -128,7 +160,14 @@ export function ProfileCardForm() {
         disabled={loading}
         className="w-full bg-sky-500 text-white font-bold px-8 py-3 rounded-lg hover:bg-sky-600 transition-all duration-200 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
       >
-        {loading ? "生成中..." : "プロフカードを生成する"}
+        {loading ? (
+          <span className="flex items-center justify-center gap-2">
+            <span className="inline-block w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+            {loadingMessages[loadingMsg]}
+          </span>
+        ) : (
+          "プロフカードを生成する"
+        )}
       </button>
     </form>
   );

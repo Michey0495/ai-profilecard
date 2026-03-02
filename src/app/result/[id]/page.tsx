@@ -3,6 +3,9 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { Metadata } from "next";
 import { ShareButtons } from "@/components/ShareButtons";
+import { AnimatedStats } from "@/components/AnimatedStats";
+import { CardDownload } from "@/components/CardDownload";
+import { CardReveal } from "@/components/CardReveal";
 import type { ProfileResult } from "@/types";
 
 const siteUrl =
@@ -60,6 +63,7 @@ export default async function ResultPage({ params }: Props) {
       </div>
 
       {/* Profile Card */}
+      <CardReveal>
       <div className="bg-white/5 rounded-xl border border-white/10 overflow-hidden mb-6">
         {/* Header */}
         <div className="p-6 border-b border-white/10">
@@ -92,24 +96,7 @@ export default async function ResultPage({ params }: Props) {
         {/* Stats */}
         <div className="p-6 border-b border-white/10">
           <p className="text-white/40 text-xs font-medium mb-4">STATUS</p>
-          <div className="space-y-3">
-            {result.stats.map((stat, i) => (
-              <div key={i}>
-                <div className="flex justify-between items-center mb-1">
-                  <span className="text-white/70 text-sm">{stat.label}</span>
-                  <span className="text-sky-400 text-sm font-bold">
-                    {stat.value}
-                  </span>
-                </div>
-                <div className="w-full bg-white/10 rounded-full h-2">
-                  <div
-                    className="bg-sky-400 h-2 rounded-full transition-all duration-500"
-                    style={{ width: `${stat.value}%` }}
-                  />
-                </div>
-              </div>
-            ))}
-          </div>
+          <AnimatedStats stats={result.stats} />
         </div>
 
         {/* Hashtags */}
@@ -142,9 +129,12 @@ export default async function ResultPage({ params }: Props) {
         </div>
       </div>
 
+      </CardReveal>
+
       {/* Share */}
       <div className="space-y-4">
         <ShareButtons shareText={shareText} shareUrl={shareUrl} />
+        <CardDownload cardId={id} />
         <Link
           href="/"
           className="block w-full bg-sky-500 text-white font-bold px-8 py-3 rounded-lg text-center hover:bg-sky-600 transition-all duration-200 cursor-pointer"

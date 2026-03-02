@@ -105,14 +105,80 @@ export default function Home() {
 
       <ProfileCardForm />
 
+      {/* Sample Card */}
       <section className="mt-16 space-y-4">
+        <h2 className="text-white/50 text-xs tracking-widest uppercase text-center">
+          Sample
+        </h2>
+        <div className="bg-white/5 rounded-xl border border-white/10 overflow-hidden">
+          <div className="p-6 border-b border-white/10">
+            <p className="text-sky-400 text-xs font-bold tracking-widest mb-2">
+              探究者タイプ
+            </p>
+            <p className="text-white font-black text-2xl">たろう</p>
+            <p className="text-sky-400 font-bold text-lg mt-1">
+              深夜のコード職人
+            </p>
+            <p className="text-white/60 text-sm mt-3 leading-relaxed">
+              好奇心の赴くままにコードを書き、未知の技術に飛び込む冒険者
+            </p>
+          </div>
+          <div className="p-6 border-b border-white/10">
+            <p className="text-white/40 text-xs font-medium mb-4">STATUS</p>
+            <div className="space-y-3">
+              {[
+                { label: "コード力", value: 88 },
+                { label: "好奇心", value: 95 },
+                { label: "集中力", value: 72 },
+                { label: "創造性", value: 81 },
+                { label: "探究心", value: 90 },
+              ].map((stat) => (
+                <div key={stat.label}>
+                  <div className="flex justify-between items-center mb-1">
+                    <span className="text-white/70 text-sm">{stat.label}</span>
+                    <span className="text-sky-400 text-sm font-bold">
+                      {stat.value}
+                    </span>
+                  </div>
+                  <div className="w-full bg-white/10 rounded-full h-2">
+                    <div
+                      className="bg-sky-400 h-2 rounded-full"
+                      style={{ width: `${stat.value}%` }}
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="p-6">
+            <div className="flex flex-wrap gap-2">
+              {["プログラミング好き", "夜型エンジニア", "技術探究者"].map(
+                (tag) => (
+                  <span
+                    key={tag}
+                    className="bg-sky-500/10 text-sky-400 text-xs px-3 py-1.5 rounded-full border border-sky-400/20"
+                  >
+                    #{tag}
+                  </span>
+                )
+              )}
+            </div>
+          </div>
+        </div>
+        <p className="text-white/30 text-xs text-center">
+          このようなカードがAIによって自動生成されます
+        </p>
+      </section>
+
+      {/* Features */}
+      <section className="mt-12 space-y-4">
         <h2 className="text-white/50 text-xs tracking-widest uppercase text-center">
           Features
         </h2>
         <div className="grid grid-cols-2 gap-3">
           {[
             { title: "AI生成キャッチコピー", desc: "あなたの個性を一言で表現" },
-            { title: "ステータス表示", desc: "5つの能力値をレーダー風に可視化" },
+            { title: "ステータス表示", desc: "5つの能力値をバーで可視化" },
             { title: "性格タイプ判定", desc: "趣味と性格からタイプを分析" },
             { title: "SNSシェア対応", desc: "OGP画像付きで映えるシェア" },
           ].map((f) => (
