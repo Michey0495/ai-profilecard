@@ -76,12 +76,12 @@ export default function Home() {
           <span className="text-sky-400">{"//"}</span> AIプロフカード
         </h1>
         <p className="text-white/70 text-lg leading-relaxed">
-          名前と趣味を入力するだけで、AIが
-          <span className="text-sky-400 font-bold">オシャレな自己紹介カード</span>
+          名前と趣味を入れるだけ。AIが
+          <span className="text-sky-400 font-bold">二つ名・能力値・キャッチコピー</span>
           を自動生成
         </p>
         <p className="text-white/40 text-sm mt-2">
-          SNS映えするプロフカードを一瞬で。キャッチコピーもステータスもAIにおまかせ。
+          あなただけのRPG風キャラクターカードを一瞬で。SNSシェアもワンタップ。
         </p>
       </div>
 
@@ -192,6 +192,42 @@ export default function Home() {
               <div className="text-white text-sm font-bold">{f.title}</div>
               <div className="text-white/40 text-xs mt-1">{f.desc}</div>
             </div>
+          ))}
+        </div>
+      </section>
+
+      {/* FAQ (visible) */}
+      <section className="mt-16 space-y-4">
+        <h2 className="text-white/50 text-xs tracking-widest uppercase text-center">
+          FAQ
+        </h2>
+        <div className="space-y-3">
+          {[
+            {
+              q: "本当に無料ですか?",
+              a: "完全無料です。会員登録も不要で、何度でもカードを作成できます。",
+            },
+            {
+              q: "作ったカードはどこで使えますか?",
+              a: "X (Twitter) やLINEでのシェア、画像ダウンロードに対応。自己紹介やプロフィールに自由に使えます。",
+            },
+            {
+              q: "英語でも使えますか?",
+              a: "はい。名前や趣味を英語で入力すれば、英語のカードが生成されます。",
+            },
+          ].map((item) => (
+            <details
+              key={item.q}
+              className="bg-white/5 border border-white/10 rounded-lg group"
+            >
+              <summary className="p-4 text-white text-sm font-bold cursor-pointer list-none flex justify-between items-center">
+                {item.q}
+                <span className="text-white/30 group-open:rotate-45 transition-transform duration-200 text-lg">+</span>
+              </summary>
+              <div className="px-4 pb-4 text-white/50 text-sm leading-relaxed">
+                {item.a}
+              </div>
+            </details>
           ))}
         </div>
       </section>

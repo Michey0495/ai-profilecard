@@ -58,6 +58,8 @@ export const metadata: Metadata = {
     title: "AIプロフカード - AIがオシャレな自己紹介カードを自動生成",
     description:
       "名前と趣味を入力するだけ。AIがあなただけのプロフィールカードを自動生成。無料・登録不要。",
+    site: "@ghostfee_jp",
+    creator: "@ghostfee_jp",
   },
   robots: {
     index: true,
