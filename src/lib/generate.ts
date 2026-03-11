@@ -1,4 +1,3 @@
-import Anthropic from "@anthropic-ai/sdk";
 import { kv } from "@vercel/kv";
 import { nanoid } from "nanoid";
 import type { ProfileInput, ProfileResult } from "@/types";
@@ -10,6 +9,66 @@ export interface GenerateInput {
   style?: string;
 }
 
+const TOGETHER_API_KEY = process.env.TOGETHER_API_KEY;
+const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
+const OLLAMA_URL = process.env.OLLAMA_URL || "http://localhost:11434";
+const OLLAMA_MODEL = process.env.OLLAMA_MODEL || "qwen2.5:1.5b";
+
+async function callAI(prompt: string): Promise<string> {
+  // Together AI (primary)
+  if (TOGETHER_API_KEY) {
+    const res = await fetch("https://api.together.xyz/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${TOGETHER_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model: "Qwen/Qwen2.5-7B-Instruct-Turbo",
+        messages: [{ role: "user", content: prompt }],
+        temperature: 0.7,
+      }),
+    });
+    if (res.ok) {
+      const data = await res.json();
+      return data.choices?.[0]?.message?.content ?? "";
+    }
+  }
+
+  // Ollama (local fallback)
+  try {
+    const res = await fetch(`${OLLAMA_URL}/api/chat`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: OLLAMA_MODEL,
+        messages: [{ role: "user", content: prompt }],
+        stream: false,
+        options: { num_ctx: 2048, temperature: 0.7 },
+      }),
+    });
+    if (res.ok) {
+      const data = await res.json();
+      return data.message?.content ?? "";
+    }
+  } catch {}
+
+  // Anthropic fallback
+  if (ANTHROPIC_API_KEY) {
+    const Anthropic = (await import("@anthropic-ai/sdk")).default;
+    const client = new Anthropic({ apiKey: ANTHROPIC_API_KEY });
+    const message = await client.messages.create({
+      model: "claude-haiku-4-5-20251001",
+      max_tokens: 1024,
+      messages: [{ role: "user", content: prompt }],
+    });
+    const block = message.content[0];
+    return block.type === "text" ? block.text : "";
+  }
+
+  throw new Error("AI backend unavailable");
+}
+
 export async function generateProfileCard(
   raw: GenerateInput
 ): Promise<ProfileResult> {
@@ -19,8 +78,6 @@ export async function generateProfileCard(
     personality: String(raw.personality ?? "").slice(0, 200),
     style: String(raw.style ?? "cool").slice(0, 20),
   };
-
-  const anthropic = new Anthropic();
 
   const prompt = `あなたはプロフィールカードデザイナーです。ユーザーの情報からオシャレな自己紹介カードの内容を生成してください。
 
@@ -54,14 +111,7 @@ ${input.personality ? `- 性格・特徴: ${input.personality}` : ""}
 - titleは印象的で個性的なものにしてください
 - ハッシュタグは3つ、日本語で`;
 
-  const message = await anthropic.messages.create({
-    model: "claude-haiku-4-5-20251001",
-    max_tokens: 1024,
-    messages: [{ role: "user", content: prompt }],
-  });
-
-  const text =
-    message.content[0].type === "text" ? message.content[0].text : "";
+  const text = await callAI(prompt);
 
   let parsed;
   try {
