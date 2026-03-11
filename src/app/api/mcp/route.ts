@@ -1,8 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import Anthropic from "@anthropic-ai/sdk";
-import { kv } from "@vercel/kv";
-import { nanoid } from "nanoid";
-import type { ProfileResult } from "@/types";
+import { generateProfileCard } from "@/lib/generate";
 
 const siteUrl =
   process.env.NEXT_PUBLIC_SITE_URL ?? "https://ai-profilecard.ezoai.jp";
@@ -74,80 +71,12 @@ export async function POST(req: NextRequest) {
         });
       }
 
-      const anthropic = new Anthropic();
-      const prompt = `あなたはプロフィールカードデザイナーです。ユーザーの情報からオシャレな自己紹介カードの内容を生成してください。
-
-【ユーザー情報】
-- 名前: ${String(args.name).slice(0, 50)}
-- 趣味・興味: ${String(args.interests).slice(0, 300)}
-${args.personality ? `- 性格・特徴: ${String(args.personality).slice(0, 200)}` : ""}
-- カードの雰囲気: ${String(args.style ?? "cool").slice(0, 20)}
-
-以下のJSON形式で回答してください。日本語で回答。絵文字は使わないでください。
-
-{
-  "title": "その人を一言で表すキャッチーな二つ名（5-15文字）",
-  "catchcopy": "カッコいいorかわいいキャッチコピー（15-30文字）",
-  "type": "性格タイプ名",
-  "description": "その人の魅力を伝える紹介文（50-80文字）",
-  "stats": [
-    {"label": "能力名1", "value": 数値(50-99)},
-    {"label": "能力名2", "value": 数値(50-99)},
-    {"label": "能力名3", "value": 数値(50-99)},
-    {"label": "能力名4", "value": 数値(50-99)},
-    {"label": "能力名5", "value": 数値(50-99)}
-  ],
-  "hashtags": ["ハッシュタグ1", "ハッシュタグ2", "ハッシュタグ3"]
-}
-
-JSONのみを出力してください。`;
-
-      const message = await anthropic.messages.create({
-        model: "claude-haiku-4-5-20251001",
-        max_tokens: 1024,
-        messages: [{ role: "user", content: prompt }],
+      const result = await generateProfileCard({
+        name: args.name,
+        interests: args.interests,
+        personality: args.personality,
+        style: args.style,
       });
-
-      const text =
-        message.content[0].type === "text" ? message.content[0].text : "";
-
-      let parsed;
-      try {
-        parsed = JSON.parse(text);
-      } catch {
-        const jsonMatch = text.match(/\{[\s\S]*\}/);
-        if (!jsonMatch) {
-          throw new Error("Failed to parse AI response");
-        }
-        try {
-          parsed = JSON.parse(jsonMatch[0]);
-        } catch {
-          throw new Error("Failed to parse AI response");
-        }
-      }
-
-      const id = nanoid(10);
-      const result: ProfileResult = {
-        id,
-        input: {
-          name: String(args.name).slice(0, 50),
-          interests: String(args.interests).slice(0, 300),
-          personality: String(args.personality ?? "").slice(0, 200),
-          style: String(args.style ?? "cool").slice(0, 20),
-        },
-        title: parsed.title ?? args.name,
-        catchcopy: parsed.catchcopy ?? "",
-        type: parsed.type ?? "不明タイプ",
-        description: parsed.description ?? "",
-        stats: (parsed.stats ?? []).slice(0, 5).map((s: { label: string; value: number }) => ({
-          label: String(s.label).slice(0, 20),
-          value: Math.min(99, Math.max(50, Number(s.value) || 70)),
-        })),
-        hashtags: (parsed.hashtags ?? []).slice(0, 3).map((h: string) => String(h).slice(0, 30)),
-        createdAt: new Date().toISOString(),
-      };
-
-      await kv.set(`profilecard:${id}`, result, { ex: 60 * 60 * 24 * 30 });
 
       return NextResponse.json({
         jsonrpc: "2.0",
@@ -171,8 +100,8 @@ JSONのみを出力してください。`;
             },
           ],
           meta: {
-            resultId: id,
-            resultUrl: `${siteUrl}/result/${id}`,
+            resultId: result.id,
+            resultUrl: `${siteUrl}/result/${result.id}`,
           },
         },
       });

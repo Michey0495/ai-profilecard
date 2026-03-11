@@ -1,5 +1,5 @@
 import { ImageResponse } from "next/og";
-import { kv } from "@vercel/kv";
+import { getProfileCard } from "@/lib/generate";
 import type { ProfileResult } from "@/types";
 
 export const runtime = "edge";
@@ -20,7 +20,7 @@ export default async function OGImage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const result = await kv.get<ProfileResult>(`profilecard:${id}`);
+  const result = await getProfileCard(id);
 
   if (!result) {
     return new ImageResponse(

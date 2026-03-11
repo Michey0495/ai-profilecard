@@ -1,4 +1,3 @@
-import { kv } from "@vercel/kv";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { Metadata } from "next";
@@ -8,6 +7,7 @@ import { CardDownload } from "@/components/CardDownload";
 import { CardReveal } from "@/components/CardReveal";
 import { getTheme } from "@/lib/styles";
 import { SaveHistory } from "@/components/SaveHistory";
+import { getProfileCard } from "@/lib/generate";
 import type { ProfileResult } from "@/types";
 
 const siteUrl =
@@ -19,7 +19,7 @@ interface Props {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
-  const result = await kv.get<ProfileResult>(`profilecard:${id}`);
+  const result = await getProfileCard(id);
 
   if (!result) {
     return { title: "結果が見つかりません" };
@@ -46,7 +46,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ResultPage({ params }: Props) {
   const { id } = await params;
-  const result = await kv.get<ProfileResult>(`profilecard:${id}`);
+  const result = await getProfileCard(id);
 
   if (!result) {
     notFound();
