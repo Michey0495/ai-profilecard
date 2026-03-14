@@ -1,4 +1,3 @@
-import { kv } from "@vercel/kv";
 import { nanoid } from "nanoid";
 import type { ProfileInput, ProfileResult } from "@/types";
 
@@ -9,13 +8,38 @@ export interface GenerateInput {
   style?: string;
 }
 
+const memoryStore = new Map<string, ProfileResult>();
+
+export async function getProfileCard(id: string): Promise<ProfileResult | null> {
+  if (process.env.KV_REST_API_URL) {
+    try {
+      const { kv } = await import("@vercel/kv");
+      return await kv.get<ProfileResult>(`profilecard:${id}`);
+    } catch {}
+  }
+  return memoryStore.get(id) ?? null;
+}
+
 const TOGETHER_API_KEY = process.env.TOGETHER_API_KEY;
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
 const OLLAMA_URL = process.env.OLLAMA_URL || "http://localhost:11434";
 const OLLAMA_MODEL = process.env.OLLAMA_MODEL || "qwen2.5:1.5b";
 
 async function callAI(prompt: string): Promise<string> {
-  // Together AI (primary)
+  // Anthropic (primary)
+  if (ANTHROPIC_API_KEY) {
+    const Anthropic = (await import("@anthropic-ai/sdk")).default;
+    const client = new Anthropic({ apiKey: ANTHROPIC_API_KEY });
+    const message = await client.messages.create({
+      model: "claude-haiku-4-5-20251001",
+      max_tokens: 1024,
+      messages: [{ role: "user", content: prompt }],
+    });
+    const block = message.content[0];
+    return block.type === "text" ? block.text : "";
+  }
+
+  // Together AI (fallback)
   if (TOGETHER_API_KEY) {
     const res = await fetch("https://api.together.xyz/v1/chat/completions", {
       method: "POST",
@@ -52,19 +76,6 @@ async function callAI(prompt: string): Promise<string> {
       return data.message?.content ?? "";
     }
   } catch {}
-
-  // Anthropic fallback
-  if (ANTHROPIC_API_KEY) {
-    const Anthropic = (await import("@anthropic-ai/sdk")).default;
-    const client = new Anthropic({ apiKey: ANTHROPIC_API_KEY });
-    const message = await client.messages.create({
-      model: "claude-haiku-4-5-20251001",
-      max_tokens: 1024,
-      messages: [{ role: "user", content: prompt }],
-    });
-    const block = message.content[0];
-    return block.type === "text" ? block.text : "";
-  }
 
   throw new Error("AI backend unavailable");
 }
@@ -148,7 +159,17 @@ ${input.personality ? `- 性格・特徴: ${input.personality}` : ""}
     createdAt: new Date().toISOString(),
   };
 
-  await kv.set(`profilecard:${id}`, result, { ex: 60 * 60 * 24 * 30 });
+  // Store in KV if available, otherwise use in-memory
+  if (process.env.KV_REST_API_URL) {
+    try {
+      const { kv } = await import("@vercel/kv");
+      await kv.set(`profilecard:${id}`, result, { ex: 60 * 60 * 24 * 30 });
+    } catch {
+      memoryStore.set(id, result);
+    }
+  } else {
+    memoryStore.set(id, result);
+  }
 
   return result;
 }
